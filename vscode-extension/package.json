@@ -1,0 +1,130 @@
+{
+  "name": "moulang",
+  "displayName": "Moulang for VS Code",
+  "description": "Language support and native execution for Moulang source files.",
+  "version": "0.2.1",
+  "license": "MIT",
+  "publisher": "KaichuTheFox",
+  "icon": "images/moulang-icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./src/extension.js",
+  "scripts": {
+    "package": "vsce package --no-dependencies",
+    "test:unit": "node --test ../tests/vscode/compiler.test.js ../tests/vscode/grammar.test.js",
+    "test": "node ../tests/vscode/run.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Team-HaZos/Moulang.git"
+  },
+  "homepage": "https://github.com/Team-HaZos/Moulang#readme",
+  "bugs": {
+    "url": "https://github.com/Team-HaZos/Moulang/issues"
+  },
+  "devDependencies": {
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.1.0",
+    "vscode-oniguruma": "2.0.1",
+    "vscode-textmate": "9.3.2"
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "moulang",
+        "aliases": [
+          "Moulang"
+        ],
+        "extensions": [
+          ".mcx",
+          ".m",
+          ".mxx",
+          ".mpp",
+          ".mcp",
+          ".m++",
+          ".mc+"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "moulang",
+        "scopeName": "source.moulang",
+        "path": "./syntaxes/moulang.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "moulang",
+        "path": "./snippets/moulang.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "moulang.run",
+        "title": "Moulang: Run Current File",
+        "icon": "$(play)"
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "moulang",
+        "owner": "moulang",
+        "source": "Moulang",
+        "fileLocation": "absolute",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(error)\\s+(ML\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "code": 5,
+          "message": 6
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "moulang.run",
+          "when": "resourceLangId == moulang && resourceScheme == file",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Moulang",
+      "properties": {
+        "moulang.executablePath": {
+          "type": "string",
+          "scope": "resource",
+          "default": "moulang",
+          "description": "Moulang executable name on PATH or the full path to moulang.exe."
+        },
+        "moulang.liveDiagnostics": {
+          "type": "boolean",
+          "scope": "resource",
+          "default": false,
+          "description": "Check unsaved Moulang edits in trusted workspace folders."
+        },
+        "moulang.tikiMode": {
+          "type": "string",
+          "scope": "resource",
+          "enum": ["off", "basic", "perf", "deep", "all"],
+          "default": "off",
+          "description": "Show opt-in Tiki Inspector warnings when Moulang Live Diagnostics is enabled."
+        }
+      }
+    }
+  }
+}

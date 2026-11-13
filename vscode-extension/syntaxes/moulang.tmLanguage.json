@@ -1,0 +1,37 @@
+{
+  "name": "Moulang",
+  "scopeName": "source.moulang",
+  "patterns": [
+    { "name": "comment.line.double-slash.moulang", "match": "//.*$" },
+    { "name": "comment.block.moulang", "begin": "/\\*", "end": "\\*/" },
+    {
+      "match": "^[ \\t]*(import)[ \\t]+(\"std:(?:math|text|time|random)\")(?:[ \\t]+(as)[ \\t]+([A-Za-z_\\p{Hangul}][A-Za-z_0-9\\p{Hangul}]*))?",
+      "captures": {
+        "1": { "name": "keyword.control.moulang" },
+        "2": { "name": "string.quoted.double.moulang" },
+        "3": { "name": "keyword.control.moulang" },
+        "4": { "name": "entity.name.namespace.moulang" }
+      }
+    },
+    {
+      "name": "string.quoted.double.moulang", "begin": "\"", "end": "\"|$",
+      "patterns": [
+        { "name": "constant.character.escape.moulang", "match": "\\\\(?:[nrt\\\\\"0]|x[0-9A-Fa-f]{2}|u\\{[0-9A-Fa-f]{1,6}\\})" },
+        { "name": "invalid.illegal.escape.moulang", "match": "\\\\(?:.|$)" }
+      ]
+    },
+    { "name": "storage.type.moulang", "match": "\\b(void|char|short|int|long|float|double|bool|str|var|def)\\b" },
+    { "name": "invalid.deprecated.type.moulang", "match": "\\bstring\\b" },
+    { "name": "storage.type.struct.moulang", "match": "\\b(struct|class)\\b" },
+    { "name": "storage.modifier.moulang", "match": "\\b(public|private)\\b" },
+    { "name": "keyword.operator.new.moulang", "match": "\\bnew\\b" },
+    { "name": "variable.language.moulang", "match": "\\bthis\\b" },
+    { "name": "keyword.control.moulang", "match": "\\b(return|if|elif|else|while|for|foreach|in|break|continue|import)\\b" },
+    { "name": "constant.language.moulang", "match": "\\b(true|false|null)\\b" },
+    { "name": "constant.numeric.moulang", "match": "\\b[0-9]+(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?\\b" },
+    { "name": "entity.name.function.moulang", "match": "\\bmain\\b(?=\\s*\\()" },
+    { "name": "support.function.moulang", "match": "\\b(print|type|input|format|append|len|readText|writeText|RText|WText|AText)\\b(?=\\s*\\()" },
+    { "name": "support.function.moulang", "match": "(?<=\\.)\\b(insert|remove|sort|pop)\\b(?=\\s*\\()" },
+    { "name": "entity.name.function.moulang", "match": "\\b\\p{Hangul}[A-Za-z_0-9\\p{Hangul}]*(?=\\s*\\()" }
+  ]
+}

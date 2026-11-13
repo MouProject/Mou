@@ -1,0 +1,94 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const { test, before, after } = require('node:test');
+const textmate = require('../../vscode-extension/node_modules/vscode-textmate');
+const oniguruma = require('../../vscode-extension/node_modules/vscode-oniguruma');
+
+let registry;
+let grammar;
+before(async () => {
+    const wasm = await fs.readFile(require.resolve('../../vscode-extension/node_modules/vscode-oniguruma/release/onig.wasm'));
+    await oniguruma.loadWASM(wasm.buffer.slice(wasm.byteOffset, wasm.byteOffset + wasm.byteLength));
+    const filename = path.resolve(__dirname, '../../vscode-extension/syntaxes/moulang.tmLanguage.json');
+    registry = new textmate.Registry({
+        onigLib: Promise.resolve({
+            createOnigScanner: patterns => new oniguruma.OnigScanner(patterns),
+            createOnigString: text => new oniguruma.OnigString(text)
+        }),
+        loadGrammar: async scope => scope === 'source.moulang'
+            ? textmate.parseRawGrammar(await fs.readFile(filename, 'utf8'), filename) : null
+    });
+    grammar = await registry.loadGrammar('source.moulang');
+    assert.ok(grammar);
+});
+after(() => registry?.dispose());
+
+function scopesAt(result, index) {
+    return result.tokens.find(token => token.startIndex <= index && index < token.endIndex)?.scopes ?? [];
+}
+
+test('TextMate recognizes all supported escape forms', () => {
+    const escapes = ['\\n', '\\r', '\\t', '\\\\', '\\"', '\\0', '\\x4F', '\\u{1f600}'];
+    const source = 'print("' + escapes.join(' ') + '")';
+    const result = grammar.tokenizeLine(source, textmate.INITIAL);
+    let offset = 7;
+    for (const escape of escapes) {
+        const index = source.indexOf(escape, offset);
+        assert.ok(index >= 0);
+        assert.ok(scopesAt(result, index).includes('constant.character.escape.moulang'), escape);
+        offset = index + escape.length;
+    }
+});
+
+test('escaped quotes and backslashes preserve string boundaries', () => {
+    const source = 'print("before\\"after\\\\") // done';
+    const result = grammar.tokenizeLine(source, textmate.INITIAL);
+    assert.ok(scopesAt(result, source.indexOf('after')).includes('string.quoted.double.moulang'));
+    assert.ok(scopesAt(result, source.indexOf('//')).includes('comment.line.double-slash.moulang'));
+    const unclosed = grammar.tokenizeLine('print("unclosed', textmate.INITIAL);
+    const next = grammar.tokenizeLine('print(1)', unclosed.ruleStack);
+    assert.ok(!scopesAt(next, 0).includes('string.quoted.double.moulang'));
+});
+
+test('TextMate marks structurally malformed escapes invalid', () => {
+    for (const escape of ['\\q', '\\xG0', '\\u{}', '\\u{1234567}']) {
+        const result = grammar.tokenizeLine('print("' + escape + '")', textmate.INITIAL);
+        assert.ok(scopesAt(result, 7).includes('invalid.illegal.escape.moulang'), escape);
+    }
+});
+
+test('TextMate recognizes source types, block items, and Hangul names', () => {
+    const name = '\uD55C\uAE00';
+    const source = 'str ' + name + '(str name) {';
+    const declaration = grammar.tokenizeLine(source, textmate.INITIAL);
+    assert.ok(scopesAt(declaration, 0).includes('storage.type.moulang'));
+    assert.ok(scopesAt(declaration, 4).includes('entity.name.function.moulang'));
+    const oldType = grammar.tokenizeLine('string old = ""', textmate.INITIAL);
+    assert.ok(scopesAt(oldType, 0).includes('invalid.deprecated.type.moulang'));
+    for (const word of ['type', 'input', 'format']) {
+        const call = grammar.tokenizeLine(word + '(name)', textmate.INITIAL);
+        assert.ok(scopesAt(call, 0).includes('support.function.moulang'));
+    }
+});
+
+test('TextMate carries block comments across lines and leaves string delimiters alone', () => {
+    const open = grammar.tokenizeLine('/* "text" //', textmate.INITIAL);
+    assert.ok(scopesAt(open, 3).includes('comment.block.moulang'));
+    const close = grammar.tokenizeLine('done */ print("/* literal */")', open.ruleStack);
+    assert.ok(scopesAt(close, 0).includes('comment.block.moulang'));
+    assert.ok(scopesAt(close, 8).includes('support.function.moulang'));
+    assert.ok(scopesAt(close, 15).includes('string.quoted.double.moulang'));
+});
+
+test('TextMate recognizes a standard module alias without reserving as globally', () => {
+    const source = 'import "std:math" as numeric';
+    const result = grammar.tokenizeLine(source, textmate.INITIAL);
+    assert.ok(scopesAt(result, source.indexOf('std:')).includes('string.quoted.double.moulang'));
+    assert.ok(scopesAt(result, source.indexOf('as numeric')).includes('keyword.control.moulang'));
+    assert.ok(scopesAt(result, source.indexOf('numeric')).includes('entity.name.namespace.moulang'));
+    const ordinary = grammar.tokenizeLine('var as = 1', textmate.INITIAL);
+    assert.ok(!scopesAt(ordinary, 4).includes('keyword.control.moulang'));
+});
