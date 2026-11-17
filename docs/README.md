@@ -20,4 +20,4 @@
 - [String escape decisions](STRING_ESCAPE_DESIGN.md), [integer conversion and overload decisions](LONG_DESIGN.md), and [mixed list proposal](MIXED_LIST_DESIGN.md) record design details.
 - [Installation](INSTALL.md), [Windows deployment](DEPLOYMENT.md), [release verification](RELEASE.md), and the [VS Code test guide](../tests/vscode/README.md) cover the distribution and editor integration.
 - [Privacy](PRIVACY.md) and [repository rename history](REPOSITORY_RENAME.md) cover repository and distribution maintenance.
-- [0.4.0 preview notes](RELEASE_NOTES_0.4.0.md), [0.3.0 release notes](RELEASE_NOTES_0.3.0.md), [0.2.0 release notes](RELEASE_NOTES_0.2.0.md), and the [changelog](../CHANGELOG.md) describe the updates.
+- [0.4.1 test preview notes](RELEASE_NOTES_0.4.1.md), [0.4.0 preview notes](RELEASE_NOTES_0.4.0.md), [0.3.0 release notes](RELEASE_NOTES_0.3.0.md), [0.2.0 release notes](RELEASE_NOTES_0.2.0.md), and the [changelog](../CHANGELOG.md) describe the updates.

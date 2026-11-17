@@ -1,5 +1,31 @@
 # Implementation status
 
+## Current source feature status
+
+| Feature | Status | Scope |
+| --- | --- | --- |
+| Integer list math and membership | Implemented | `math.min/max/sum` for `int[]`. `.contains()` for `int[]` and flat `str[]`. |
+| ASCII conversions | Implemented | `int(str)` and `str(char)`. Numeric casts and numeric `char` output retain their rules. |
+| Standard random module | Implemented | Seeded `nextInt` and `nextDouble` in the current implementation. |
+| Managed memory | Partial | ARC for strings, lists, and owned views. Class objects and legacy heap slices have process lifetime. |
+| Source extensions | Implemented | `.mcx` default, `.m` for compatibility, and five additional supported suffixes. No formal deprecations. |
+| General class cycle reclamation and Linux output | Planned | Design work remains. |
+
+## Unreleased collection and ASCII conversions
+
+Windows x64 passed 27 Release and 24 Debug CTest entries, including the aggregate, membership, ASCII conversion, seeded lottery, and ARC checks. The standard-library suite exercises the new operations at `-O0`, `-O2`, and `-O3`. The repository-link and VS Code unit checks passed, and isolated VS Code 1.144.0 passed with both the source extension and the installed VSIX.
+
+The new local bundle passed checksum, notice, and extracted-install verification with restricted tool discovery. Separate clean Windows 10/11 and generated-program AddressSanitizer checks remain open.
+
+### Collection update benchmark
+
+On one Windows 11 x64 host (build 26300, Ryzen 5 5600X), each case ran once as a warm-up and seven times for measurement. The comparison used both Moulang builds at `-O2`, Clang 22.1.8 in C++20 mode with `-O2 -static`, and CPython 3.14.6 with `-B`. Collection workloads include input construction. The figures below report in-process work time unless stated otherwise.
+
+- Integer list aggregation used 100,000 elements and 32 sum passes. Moulang took 1.633 ms (1.563 to 1.752), C++ took 0.792 ms (0.757 to 0.868), and CPython took 13.711 ms (13.171 to 14.324). Moulang's median peak working set was 4.80 MiB.
+- The list-sort median moved from 3.422 ms to 3.518 ms across the two Moulang builds. The observed ranges overlapped, from 3.392 to 3.509 ms before and 3.398 to 3.714 ms after.
+- The positive Hangul indexing workload took 6.046 ms in Moulang, 5.686 ms in C++ with UTF-8 scanning, and 1.334 ms with CPython's Unicode indexing. The different string representations affect this comparison.
+- The new Moulang build compiled the minimal program in 92.577 ms median and executed it in 9.235 ms median including process startup.
+
 ## Unreleased UTF-8 indexing optimization
 
 Non-ASCII string indexing scans from the front for nonnegative indices and from the back for negative indices. The runtime uses constant extra space and retains the original backing storage for each indexed result. ASCII indexing still uses direct offsets. See the [implementation and benchmarks](progress/PERFORMANCE_OPTIMIZATION_DESIGN.md).

@@ -115,8 +115,20 @@ async function run() {
             'vscode.executeCompletionItemProvider', document.uri, new vscode.Position(0, 7)
         );
         assert.ok(methodResults.items.some(item => item.label === 'pop'));
+        await editor.edit(edit => edit.replace(new vscode.Range(0, 0, 0, 7), 'list.con'));
+        const containsResults = await vscode.commands.executeCommand(
+            'vscode.executeCompletionItemProvider', document.uri, new vscode.Position(0, 8)
+        );
+        assert.ok(containsResults.items.some(item => item.label === 'contains'));
         await editor.edit(edit => edit.replace(
-            new vscode.Range(0, 0, 0, 7),
+            new vscode.Range(0, 0, 0, 8), 'import "std:math" as numbers\nnumbers.'
+        ));
+        const aggregateResults = await vscode.commands.executeCommand(
+            'vscode.executeCompletionItemProvider', document.uri, new vscode.Position(1, 8)
+        );
+        assert.ok(['min', 'max', 'sum'].every(name => aggregateResults.items.some(item => item.label === name)));
+        await editor.edit(edit => edit.replace(
+            new vscode.Range(0, 0, 1, 8),
             'struct Point { int x }\nmain() { Point? p = Point(10)\nprint(p?.x ?? 0) }\n'
         ));
         await vscode.workspace.getConfiguration('moulang').update(

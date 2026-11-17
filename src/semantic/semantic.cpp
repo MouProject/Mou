@@ -363,11 +363,15 @@ Type Analyzer::checkExpression(Expression& expression, const Variables& variable
         if (safe) receiver = nullableBase(receiver);
         if (listType(receiver)) {
             const auto& name = expression.text;
+            if (stringListDepth(receiver) > 1 && name == "contains") {
+                throw Diagnostic(expression.location, "ML3043", "Contains requires an int[] or flat str[] list.");
+            }
             if (stringListDepth(receiver) > 1 && (name == "sort" || name == "remove")) {
                 throw Diagnostic(expression.location, "ML3043", "Sort and remove require a flat str[] list.");
             }
+            const bool contains = name == "contains";
             const bool insert = name == "insert";
-            const bool takesValue = insert || name == "append" || name == "remove";
+            const bool takesValue = insert || name == "append" || name == "remove" || contains;
             const bool pop = name == "pop";
             if (!takesValue && !pop && name != "sort") {
                 throw Diagnostic(expression.location, "ML3043", "Unknown list method.");
@@ -381,6 +385,7 @@ Type Analyzer::checkExpression(Expression& expression, const Variables& variable
             if (takesValue && checkValue(*expression.arguments.back(), variables, listElement(receiver)) != listElement(receiver)) {
                 throw Diagnostic(expression.arguments.back()->location, "ML3011", "Argument must match the list element type.");
             }
+            if (contains) return expression.type = Type::boolean;
             if (!pop && !allowVoid) {
                 throw Diagnostic(expression.location, "ML3012", "This list method does not produce a value.");
             }
@@ -453,12 +458,19 @@ Type Analyzer::checkExpression(Expression& expression, const Variables& variable
             }
             const auto& argument = expression.arguments.front();
             const auto actual = checkExpression(*argument, variables);
-            if (!numericType(actual)) {
+            if (!numericType(actual) && !(target == Type::integer && actual == Type::string)) {
                 throw Diagnostic(expression.location, "ML3020", "A numeric cast requires exactly one numeric value.",
                     {argument->span, "This argument has type " + typeName(actual) + ".",
                         "Pass a char, short, int, long, float, or double value."});
             }
             return expression.type = target;
+        }
+        if (expression.text == "str") {
+            if (expression.arguments.size() != 1 ||
+                checkExpression(*expression.arguments.front(), variables) != Type::byte) {
+                throw Diagnostic(expression.location, "ML3020", "A str cast requires exactly one char value.");
+            }
+            return expression.type = Type::string;
         }
         if (expression.text == "append") {
             if (expression.arguments.size() != 2 ||
@@ -639,16 +651,21 @@ Type Analyzer::checkStandardCall(Expression& expression, const Variables& variab
     if (candidates.empty()) {
         throw Diagnostic(expression.location, "ML3045", "Unknown function in this standard module.");
     }
+    std::erase_if(candidates, [&](const StandardFunction* function) {
+        return function->arity != expression.arguments.size();
+    });
+    if (candidates.empty()) {
+        throw Diagnostic(expression.location, "ML3011", "No standard function overload accepts this argument count.");
+    }
     std::vector<Type> actual;
     for (std::size_t i = 0; i < expression.arguments.size(); ++i) {
         auto& argument = *expression.arguments[i];
         const auto& first = *candidates.front();
-        actual.push_back(candidates.size() == 1 && first.arity == expression.arguments.size()
+        actual.push_back(candidates.size() == 1
             ? checkValue(argument, variables, first.parameters[i]) : checkExpression(argument, variables));
     }
     std::vector<std::pair<const StandardFunction*, std::vector<int>>> viable;
     for (const auto* function : candidates) {
-        if (function->arity != actual.size()) continue;
         std::vector<int> ranks;
         for (std::size_t i = 0; i < actual.size(); ++i) ranks.push_back(conversionRank(function->parameters[i], actual[i]));
         if (std::ranges::none_of(ranks, [](int value) { return value == incompatibleConversion; })) {
@@ -859,7 +876,8 @@ bool Analyzer::checkBlock(std::vector<Statement>& body, Variables variables, uns
         case StatementKind::call:
             checkExpression(*statement.value, variables, true);
             if (statement.postMutation) {
-                if (statement.value->kind != ExpressionKind::methodCall || !listType(statement.value->left->type)) {
+                if (statement.value->kind != ExpressionKind::methodCall || !listType(statement.value->left->type) ||
+                    statement.value->text == "contains") {
                     throw Diagnostic(location, "ML3043", "A post-mutation block requires a list method.");
                 }
                 const bool exits = checkBlock(statement.body, variables, loopDepth, returnType, inferReturn);

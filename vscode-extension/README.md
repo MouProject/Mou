@@ -4,11 +4,13 @@ Language support and native execution for Moulang, the programming language from
 
 The current extension source recognizes `.mcx` and the compatible suffixes `.m`, `.mxx`, `.mpp`, `.mcp`, `.m++`, and `.mc+`. Each uses the same highlighting, snippets, completion, and diagnostics. Use the matching Windows x64 compiler build for mixed-suffix imports.
 
+Extension 0.2.2 completes `math.min`, `math.max`, `math.sum`, and list `.contains()`. The matching compiler 0.4.1 test preview supports `int("A")` for an ASCII code and `str(char(65))` for text output.
+
 Extension 0.2.1 adds `Team.HaZos` to the MIT copyright notice. Version 0.2.0 introduced the new source associations, standard-module completions, and Tiki settings. Pair either extension version with compiler 0.4.0 for mixed-suffix imports and Tiki diagnostics. Compiler 0.2.0 uses `string` in explicit declarations.
 
 ## Install the compiler
 
-Use the Windows bundle that contains both compiler 0.4.0 and `moulang-0.2.1.vsix`, or [build compiler 0.4.0 from source](https://github.com/Team-HaZos/Moulang#build-from-source). The published 0.3.0 preview and its bundled extension 0.1.6 remain available as a [compiler ZIP](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip) and [SHA-256 file](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip.sha256). Compare the ZIP's `Get-FileHash -Algorithm SHA256` result before extracting the whole package, for example to `C:\Moulang`. Keep `bin/toolchain` and its notices. The kit includes the tools needed to build and run Moulang programs.
+Use the Windows test preview bundle that contains compiler 0.4.1 and `moulang-0.2.2.vsix`, or [build the compiler from source](https://github.com/Team-HaZos/Moulang#build-from-source). The published 0.3.0 preview and its bundled extension 0.1.6 remain available as a [compiler ZIP](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip) and [SHA-256 file](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip.sha256). Compare the ZIP's `Get-FileHash -Algorithm SHA256` result before extracting the whole package, for example to `C:\Moulang`. Keep `bin/toolchain` and its notices. The kit includes the tools needed to build and run Moulang programs.
 
 Set `moulang.executablePath` to `C:\Moulang\bin\moulang.exe`, without quotes, or add the bin folder to PATH and restart VS Code. The extension does not install or download a compiler automatically. Run the extracted `Verify-Install.ps1` to check package hashes and execute Hello World.
 
@@ -24,6 +26,7 @@ If the compiler cannot be found, choose **Open Settings** in the error notificat
 
 ## Compiler compatibility
 
+- Extension 0.2.2 pairs with the compiler 0.4.1 test preview for integer-list math, list membership, and ASCII conversions.
 - Extensions 0.2.0 and 0.2.1 pair with compiler 0.4.0 for all seven source suffixes, standard-module completion, and Tiki Inspector.
 - Extension 0.1.6 pairs with compiler 0.3.0 for the new syntax and completion.
 - Bundled extension 0.1.5 pairs with compiler 0.2.0 and updates download and setup guidance.

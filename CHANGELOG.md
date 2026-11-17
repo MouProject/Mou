@@ -1,6 +1,13 @@
 # Changelog
 
-## Moulang 0.4.0 preview and bundled VS Code extension 0.2.1 (unreleased)
+## Moulang 0.4.1 test preview and bundled VS Code extension 0.2.2 (unreleased)
+
+- Add `math.min(int[])`, `math.max(int[])`, and `math.sum(int[])`, including directly passed list literals. Sums return `long` and empty sums return zero.
+- Add read-only `.contains()` to `int[]` and flat `str[]`. VS Code completes it and the new math function.
+- Add single ASCII character conversion with `int(str)` and `str(char)`. Use the latter for text output such as `print(str(char(65)))`. Direct `char` output remains numeric.
+- Add a standard library and seeded lottery example for current source builds.
+
+## Moulang 0.4.0 preview and bundled VS Code extension 0.2.1
 
 - Add opt-in Tiki Inspector warnings for unused locals, repeated string accumulation, and repeated non-ASCII string indexing. Support per-rule suppression and VS Code live warnings.
 - Add Deep Tiki warning `TI-D001` for structural mutations on a known alias of a list in `foreach`. Deep is available through the CLI and VS Code and is included in opt-in All mode.

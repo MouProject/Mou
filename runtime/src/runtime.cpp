@@ -761,6 +761,15 @@ extern "C" void moulang_list_remove(void* handle, const void* data, int length, 
     runtimeError("Moulang runtime: string list does not contain the value to remove.\r\n");
 }
 
+extern "C" bool moulang_list_contains(void* handle, const void* data, int length, int ascii, void* owner) {
+    const auto* list = static_cast<const StringList*>(resolveArc(handle, ArcKind::list));
+    const ListItem needle{data, length, ascii, owner};
+    for (int i = 0; i < list->size; ++i) {
+        if (compareItems(list->items[i], needle) == 0) return true;
+    }
+    return false;
+}
+
 extern "C" void moulang_list_sort(void* handle) {
     auto* list = static_cast<StringList*>(resolveArc(handle, ArcKind::list));
     if (list->size < 2) return;
@@ -982,6 +991,20 @@ extern "C" int moulang_std_text_len(const Text* value) {
     return value->ascii ? value->length : pointCount(bytes.data(), value->length);
 }
 
+extern "C" void moulang_char_to_text(int value, Text* result) {
+    if (value > 0x7f) runtimeError("Moulang runtime: str(char) requires an ASCII byte (0 through 127).\r\n");
+    auto* output = textStorage(1, result);
+    *output = static_cast<char>(value);
+    result->ascii = true;
+}
+
+extern "C" int moulang_text_to_ascii(const char* data, int length) {
+    if (length != 1 || static_cast<unsigned char>(data[0]) > 0x7f) {
+        runtimeError("Moulang runtime: int(str) requires exactly one ASCII character.\r\n");
+    }
+    return static_cast<unsigned char>(data[0]);
+}
+
 extern "C" int moulang_std_text_find(const Text* value, const Text* needle) {
     const auto bytes = textBytes(*value);
     const auto offset = bytes.find(textBytes(*needle));
@@ -1144,6 +1167,38 @@ extern "C" void moulang_int_buffer_retain(void* handle) { retainArc(handle, ArcK
 extern "C" void moulang_int_buffer_release(void* handle) { releaseBuffer(handle, ArcKind::intBuffer); }
 
 extern "C" int moulang_int_list_len(void* handle) { return intList(handle)->size; }
+
+extern "C" bool moulang_int_list_contains(void* handle, int value) {
+    const auto* list = intList(handle);
+    const auto* elements = intBufferData(intBuffer(list));
+    for (int i = 0; i < list->size; ++i) {
+        if (elements[i] == value) return true;
+    }
+    return false;
+}
+
+extern "C" int moulang_std_int_list_min(void* handle) {
+    const auto* list = intList(handle);
+    if (!list->size) runtimeError("Moulang runtime: math.min requires a nonempty int list.\r\n");
+    const auto* elements = intBufferData(intBuffer(list));
+    return *std::min_element(elements, elements + list->size);
+}
+
+extern "C" int moulang_std_int_list_max(void* handle) {
+    const auto* list = intList(handle);
+    if (!list->size) runtimeError("Moulang runtime: math.max requires a nonempty int list.\r\n");
+    const auto* elements = intBufferData(intBuffer(list));
+    return *std::max_element(elements, elements + list->size);
+}
+
+extern "C" std::int64_t moulang_std_int_list_sum(void* handle) {
+    const auto* list = intList(handle);
+    const auto* elements = intBufferData(intBuffer(list));
+    std::int64_t sum = 0;
+    // A signed 32-bit count of signed 32-bit elements cannot overflow int64_t.
+    for (int i = 0; i < list->size; ++i) sum += elements[i];
+    return sum;
+}
 
 extern "C" std::uint64_t moulang_int_list_begin(void* handle) { return beginIteration(intList(handle)->iteration); }
 extern "C" void moulang_int_list_end(void* handle) { endIteration(intList(handle)->iteration); }

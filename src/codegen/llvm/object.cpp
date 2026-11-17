@@ -873,7 +873,7 @@ private:
         errorSite(expr.location);
         if (expr.text == "pop") return listResult("moulang_list_pop", std::move(args), expr.type);
         const auto symbol = "moulang_list_" + expr.text;
-        return call(symbol.c_str(), type(Type::none), std::move(args));
+        return call(symbol.c_str(), type(expr.type), std::move(args));
     }
 
     void formattedOutput(LLVMValueRef pattern, const Expression& format) {
@@ -1206,6 +1206,16 @@ private:
                     integer_, {expression(list)});
             }
             if (expr.text == "readText" || expr.text == "writeText" || expr.text == "AText") return textFile(expr);
+            if (expr.text == "str") {
+                const auto value = convert(*expr.arguments.front(), Type::integer);
+                errorSite(expr.location);
+                return textResult("moulang_char_to_text", {value});
+            }
+            if (expr.text == "int" && expr.arguments.front()->type == Type::string) {
+                const auto value = expression(*expr.arguments.front());
+                errorSite(expr.location);
+                return call("moulang_text_to_ascii", integer_, {checkedTextData(value), field(value, 1)});
+            }
             if (numericType(namedType(expr.text))) return explicitNumericCast(expr);
             if (expr.text == "append") {
                 const auto slice = expression(*expr.arguments[0]);

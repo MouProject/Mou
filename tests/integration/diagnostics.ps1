@@ -25,7 +25,7 @@ $cases = @(
     @{ Source = 'main() { print(noSuchFunction()) }'; Header = ':1:16: error ML3010: Unknown callable function.'; Mark = 'noSuchFunction'; Detail = "No function named 'noSuchFunction' is visible here." },
     @{ Source = 'main() { var x = null }'; Header = ':1:14: error ML3019: Specify a nullable type when initializing with null.'; Mark = 'null'; Detail = 'A null initializer does not determine the underlying type.' },
     @{ Source = 'main() { int a[2] = [1] }'; Header = ':1:21: error ML3032: Fixed array initializer length does not match the declaration.'; Mark = '[1]'; Detail = 'Expected 2 elements, but received 1.' },
-    @{ Source = 'main() { print(int("123")) }'; Header = ':1:16: error ML3020: A numeric cast requires exactly one numeric value.'; Mark = '"123"'; Detail = 'This argument has type str.' }
+    @{ Source = 'main() { print(float("123")) }'; Header = ':1:16: error ML3020: A numeric cast requires exactly one numeric value.'; Mark = '"123"'; Detail = 'This argument has type str.' }
 )
 foreach ($case in $cases) {
     $file = 'source with spaces.m'

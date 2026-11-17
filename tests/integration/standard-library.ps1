@@ -121,3 +121,114 @@ foreach ($case in @(
     }
 }
 Write-Output 'PASS: standard module scope, math, Unicode text and ARC, UTC and monotonic time, and deterministic random.'
+
+$collections = @'
+import "std:math"
+
+main() {
+    int[] values = [2147483647, 2147483647, -4]
+    int[] empty = []
+    print(math.min(values), math.max(values), math.sum(values), type(math.sum(values)))
+    print(math.sum(empty), math.sum([]), math.min([-2147483648]), math.max([1, 2]))
+    print(math.sum([-2147483648, -2147483648]), math.min(8, 9), math.max(8, 9))
+    foreach (item in values) {
+        print(values.contains(item), values.contains(0), math.min(values))
+    }
+    str[] words = ["", "\u{AC00}\0", "e\u{301}", "\u{1F600}"]
+    str[] noWords = []
+    foreach (word in words) { print(words.contains(word)) }
+    print(words.contains("\u{AC00}"), words.contains("\u{E9}"), empty.contains(1), noWords.contains(""))
+
+    print(char(65), str(char(65)), int("A"), int("5"), int("\0"), int(str(char(127))))
+    str output = str(char(66))
+    print(output, str(char(97)), str(char(0)) == "\0", int(10.5), float(10))
+    print("{} {}") { format(char(65), str(char(65))) }
+}
+'@
+$expected = @(
+    '-4 2147483647 4294967290 long', '0 0 -2147483648 2', '-4294967296 8 9',
+    'true false -4', 'true false -4', 'true false -4', 'true', 'true', 'true', 'true',
+    'false false false false', '65 A 65 53 0 127', 'B a true 10 10', '65 A', ''
+) -join [char]10
+foreach ($optimization in '-O0', '-O2', '-O3') {
+    $file = Join-Path $work 'collections.exe'
+    $result = Invoke-Moulang 'collections.mcx' $collections 'build' -Options @($optimization, '-o', ('"' + $file + '"'))
+    if ($result.Code -ne 0 -or $result.Error) {
+        throw "Collections build failed ($optimization): $($result.Error)"
+    }
+    $result = Invoke-TestProcess $file
+    if ($result.Code -ne 0 -or $result.Out -cne $expected -or $result.Error -notmatch $report) {
+        throw "Unexpected collections output ($optimization): [$($result.Out)] [$($result.Error)]."
+    }
+}
+
+foreach ($case in @(
+    @{ Source = 'math.min([])'; Message = 'requires a nonempty int list' },
+    @{ Source = 'math.max([])'; Message = 'requires a nonempty int list' },
+    @{ Source = 'int("")'; Message = 'requires exactly one ASCII character' },
+    @{ Source = 'int("15")'; Message = 'requires exactly one ASCII character' },
+    @{ Source = 'int("\u{AC00}")'; Message = 'requires exactly one ASCII character' },
+    @{ Source = 'int("\u{1F600}")'; Message = 'requires exactly one ASCII character' },
+    @{ Source = 'str(char(128))'; Message = 'requires an ASCII byte' },
+    @{ Source = 'str(char(255))'; Message = 'requires an ASCII byte' }
+)) {
+    $source = @('import "std:math"', "main() { print($($case.Source)) }") -join [char]10
+    $result = Invoke-Moulang 'bad-value.mcx' $source
+    if ($result.Code -ne 1 -or $result.Out -or
+        $result.Error -notmatch "bad-value[.]mcx:2:\d+: Moulang runtime: .*$($case.Message)") {
+        throw "Expected a source-located error for $($case.Source): $($result.Error)"
+    }
+}
+
+foreach ($case in @(
+    @{ Source = 'int[] values = [1]'; Call = 'print(values.contains("1"))'; Code = 'ML3011' },
+    @{ Source = 'str[] values = ["1"]'; Call = 'print(values.contains(1))'; Code = 'ML3011' },
+    @{ Source = 'int[] values = [1]'; Call = 'print(values.contains())'; Code = 'ML3011' },
+    @{ Source = 'str[][] values = [["1"]]'; Call = 'print(values.contains(["1"]))'; Code = 'ML3043' },
+    @{ Source = 'int[] values = [1]'; Call = 'values.contains(1) { print(1) }'; Code = 'ML3043' },
+    @{ Source = 'int values[] = [1]'; Call = 'print(math.sum(values))'; Code = 'ML3011' },
+    @{ Source = 'int value = 65'; Call = 'print(str(value))'; Code = 'ML3020' },
+    @{ Source = 'str value = "\xFF"'; Call = 'print(int(value))'; Code = 'ML1005' }
+)) {
+    $source = @('import "std:math"', 'main() {', $case.Source, $case.Call, '}') -join [char]10
+    $result = Invoke-Moulang 'bad-type.mcx' $source 'check'
+    if ($result.Code -ne 1 -or $result.Error -notmatch "bad-type[.]mcx:\d+:\d+: error $($case.Code):") {
+        throw "Expected $($case.Code) for $($case.Call): $($result.Error)"
+    }
+}
+
+$lottery = @'
+import "std:random"
+
+int[] draw(long seed) {
+    random.seed(seed)
+    int[] result = []
+    while (len(result) < 6) {
+        int candidate = random.nextInt(1, 45)
+        if (!result.contains(candidate)) { result.append(candidate) }
+    }
+    return result
+}
+
+main() {
+    print(draw(42))
+    print(draw(42))
+    random.seed(-17)
+    print(random.nextInt(1, 1), random.nextInt(45, 45))
+    var boundarySample = random.nextInt(-2147483648, 2147483647)
+    random.seed(-17)
+    print(boundarySample == random.nextInt(-2147483648, 2147483647))
+}
+'@
+$result = Invoke-Moulang 'lottery.mcx' $lottery
+$lines = $result.Out.Trim() -split '\r?\n'
+if ($result.Code -ne 0 -or $result.Error -notmatch $report -or $lines.Count -ne 4 -or
+    $lines[0] -cne $lines[1] -or $lines[2] -cne '1 45' -or $lines[3] -cne 'true' -or
+    $lines[0] -notmatch '^\[\d+(, \d+){5}\]$') {
+    throw "Lottery execution or seed reproducibility failed: [$($result.Out)] [$($result.Error)]"
+}
+$numbers = @($lines[0].Trim('[', ']') -split ', ' | ForEach-Object { [int] $_ })
+if (@($numbers | Sort-Object -Unique).Count -ne 6 -or @($numbers | Where-Object { $_ -lt 1 -or $_ -gt 45 }).Count) {
+    throw "Expected six distinct lottery numbers in range: $($lines[0])"
+}
+Write-Output 'PASS: list aggregates and membership, ASCII casts, and seeded lottery.'

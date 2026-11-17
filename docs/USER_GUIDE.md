@@ -21,6 +21,8 @@ Use `.mcx` for new files. The compiler and VS Code extension also support `.m`, 
 
 Existing `.m` projects can keep their filenames. To migrate a file, update imports and scripts that name it and run `moulang check` again. Use lowercase suffixes in imports. Windows may resolve a lowercase path to an uppercase filename in a case-insensitive directory.
 
+Use `.mcx` for new examples and keep `.m` for compatibility. The other five suffixes are still accepted. Any future phase-out would need a migration notice covering source filenames, import strings, CLI commands, build scripts, and editor associations.
+
 ## Learn by running the examples
 
 - [Variables](../examples/variables.m) shows explicit types, `var` inference, arithmetic, and reassignment. [Numbers](../examples/numbers.m) shows numeric types and conversions.
@@ -45,6 +47,10 @@ main() {
 ```
 
 This prints `9` and `a + b`. Import an alias in each file that uses it. The VS Code extension suggests module functions after the alias and a dot. See the [module reference](LANGUAGE_SPEC.md#standard-modules) for API details, including code-point indices, UTC dates, and repeatable random seeds.
+
+Use `math.min(numbers)`, `math.max(numbers)`, and `math.sum(numbers)` with an `int[]`. The aggregate functions also accept direct literals. Use `numbers.contains(value)` to test membership before appending, or use the same method on a flat `str[]`. See the [seeded lottery example](../examples/standard-library-update.mcx).
+
+Use `str(char(65))` to turn the byte 65 into the text `"A"` and `int("A")` to read its code. `int("5")` returns 53. Both of these text conversions support the ASCII range.
 
 ## Migrate from Moulang 0.2.0
 
@@ -119,7 +125,7 @@ main() {
 }
 ```
 
-This prints `[1, 2, 3, 4] 3`. The prefix spelling `int[] numbers` creates a shared list. The suffix spelling `int numbers[]` creates the existing integer slice and still works with `numbers = append(numbers, 4)`.
+This prints `[1, 2, 3, 4] 3`. The prefix spelling `int[] numbers` creates a shared list, so aliases see changes from `numbers.append(4)`. The suffix spelling `int numbers[]` creates the existing integer slice. The free function `append(numbers, 4)` returns an extended slice and preserves the input slice's length and elements.
 
 To migrate a slice while keeping its contents independent, declare a new `int[]` and append each value with foreach. Use one list variable when mutations should be shared by its aliases.
 

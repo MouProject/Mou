@@ -606,7 +606,7 @@ void main(
     Check-Error 'narrow-int.m' 'main() { int value = 2.5 }' 'ML3007'
     Check-Error 'narrow-argument.m' "void f(float x) {}`nmain() { f(16777217) }" 'ML3011'
     Check-Error 'narrow-return.m' "float f() { return 16777217 }`nmain() {}" 'ML3013'
-    Check-Error 'cast-argument.m' 'main() { print(int("123")) }' 'ML3020'
+    Check-Error 'cast-argument.m' 'main() { print(float("123")) }' 'ML3020'
     Check-Error 'cast-arity.m' 'main() { print(float()) }' 'ML3020'
     Check-Error 'real-exponent.m' 'main() { print(1e+) }' 'ML1003'
     Check-Error 'real-range.m' 'main() { print(1e999) }' 'ML3003'

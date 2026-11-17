@@ -12,7 +12,7 @@ Source development and issue tracking are hosted by [Team-HaZos](https://github.
 
 Moulang 0.3.0 is a Windows x64 preview with `str`, print blocks, string lists, and UTF-8 append. See the [release notes](docs/RELEASE_NOTES_0.3.0.md) for migration from 0.2.0 and current limitations.
 
-The current source builds Moulang 0.4.0 and bundles VS Code extension 0.2.1. See the [0.4.0 preview notes](docs/RELEASE_NOTES_0.4.0.md).
+The current source builds Moulang 0.4.1 as a test preview and bundles VS Code extension 0.2.2. See the [0.4.1 preview notes](docs/RELEASE_NOTES_0.4.1.md).
 
 1. Download the [compiler ZIP](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip) and [SHA-256 file](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip.sha256) from [Release v0.3.0](https://github.com/KaichuTheFox/Moulang/releases/tag/v0.3.0). Compare `Get-FileHash .\moulang-windows-x64.zip -Algorithm SHA256` with the checksum file, then extract the whole ZIP, for example to `C:\Moulang`.
 2. Add its `bin` folder to your Windows user `PATH`, reopen the terminal, and run `moulang --version`. Keep `bin/toolchain` and its notices alongside the compiler.
@@ -71,6 +71,10 @@ moulang check examples/hello.mcx
 - `check --tiki=deep` adds an advisory warning for known structural changes to a list during `foreach`. See the [Tiki Inspector guide](docs/USER_GUIDE.md#run-tiki-inspector) for all rule groups.
 
 ## Language example
+
+Current source builds provide integer list aggregates, read-only list membership, and ASCII character conversions. Run [the standard library and lottery example](examples/standard-library-update.mcx) with `moulang run examples/standard-library-update.mcx`.
+
+See the [Windows collection benchmark](docs/IMPLEMENTATION_STATUS.md#collection-update-benchmark) for measured execution and build times.
 
 ```moulang
 int doubled(int value) {

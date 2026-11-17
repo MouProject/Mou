@@ -5,9 +5,9 @@ const vscode = require('vscode');
 const { registerLiveDiagnostics } = require('./diagnostics');
 const { resolveCompiler } = require('./compiler');
 const builtins = ['print', 'type', 'input', 'format', 'append', 'len', 'readText', 'writeText', 'RText', 'WText', 'AText'];
-const listMethods = ['append', 'insert', 'remove', 'sort', 'pop'];
+const listMethods = ['append', 'insert', 'remove', 'sort', 'pop', 'contains'];
 const standardExports = {
-    math: ['abs', 'min', 'max', 'sqrt', 'pow'],
+    math: ['abs', 'min', 'max', 'sum', 'sqrt', 'pow'],
     text: ['len', 'find', 'substring', 'replace', 'split', 'join', 'lowerAscii', 'upperAscii'],
     time: ['unixMillis', 'monotonicNanos', 'formatUtcDate'],
     random: ['seed', 'nextInt', 'nextDouble']

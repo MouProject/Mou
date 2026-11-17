@@ -1,14 +1,20 @@
 # Next Moulang preview release preparation
 
-The selected compiler version is 0.4.0 and the bundled VS Code extension version is 0.2.1. The extension uses the `KaichuTheFox.moulang` identity. The [0.4.0 preview notes](../RELEASE_NOTES_0.4.0.md) describe the features, integer narrowing migration, and installation.
+The next test preview pairs compiler 0.4.1 with VS Code extension 0.2.2. The extension uses the `KaichuTheFox.moulang` identity. The [0.4.1 test preview notes](../RELEASE_NOTES_0.4.1.md) describe the new collection functions, ASCII conversions, and installation.
 
 ## Version and publication sequence
 
 1. The selected versions are in `CMakeLists.txt`, the extension manifest, and the extension lockfile. The changelog labels the preview as unreleased. Public download links point to the published 0.3.0 preview until the new assets exist.
 2. Review the source diff before pushing. A regular `main` push or a pull request runs the build and installation jobs without a version tag. Transfer the resulting ZIP and checksum to clean Windows 10 and Windows 11 x64 environments and follow the [clean Windows steps](../RELEASE.md#additional-clean-windows-check).
-3. After validation and publication approval, push `v0.4.0` to trigger GitHub Release publication. Verify the published ZIP and checksum, then update public download links. VS Code Marketplace publication is a separate action using the same extension identity.
+3. After validation and publication approval, push `v0.4.1` to trigger GitHub preview Release publication. Verify the published ZIP and checksum, then update public download links. VS Code Marketplace publication is a separate action using the same extension identity.
 
-## Versioned build verification
+## 0.4.1 test preview verification
+
+The local build passed all 27 Release and 24 Debug CTest entries. The 10 repository-link and extension unit checks passed. Isolated VS Code 1.144.0 passed both source and installed 0.2.2 extension suites.
+
+The local ZIP passed its external checksum, all 29 manifest hashes, license notice checks, and both Hello World examples with restricted development-tool discovery. The extracted 0.4.1 compiler also ran the standard-library and lottery example. The bundled VSIX contents matched the VSIX used in the isolated editor test. This exact bundle still needs verification on separate clean Windows installations.
+
+## Prior 0.4.0 build verification
 
 The compiler 0.4.0 Release and Debug builds passed 27 of 27 and 24 of 24 CTest entries respectively. Nine extension unit tests and one repository-link test passed. The isolated VS Code 1.144.0 source and installed VSIX suites passed with extension 0.2.0.
 
@@ -18,7 +24,7 @@ The local bundle was repackaged to include the `KaichuTheFox` and `Team.HaZos` c
 
 The updated local bundle pairs compiler 0.4.0 with extension 0.2.1. Its SHA-256 is `9dd22f4a3ce80c144be75c3fb19f0a5768ef7f49c50e7fd340c2d082f3c16f36`. The ZIP and its per-file manifest passed verification, and the extracted compiler ran both Hello World examples. The source extension and installed 0.2.1 VSIX also passed the isolated editor suites.
 
-The hosted GitHub Actions run and clean Windows 10 and Windows 11 validation remain pending. The local bundle is available for those tests.
+At the time of these runs, hosted GitHub Actions and clean Windows 10 and Windows 11 validation were pending.
 
 ## Preflight before the version update
 

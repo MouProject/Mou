@@ -12,11 +12,11 @@ Some phases have partial implementations. See the [implementation status](IMPLEM
 
 Stage 13 uses relative source imports and the existing `public` and `private` rules for source-distributed modules. A generated `.mci` interface paired with a `.lib` static archive remains a future option for independent compilation and distribution without implementation source. Revisit it when that distribution need is established. The binary design would define stable exported signatures, target and ABI compatibility, artifact pairing, and ownership across the library boundary. See the [module interface design](progress/MODULE_INTERFACE_DESIGN.md).
 
-Stage 6 implements ARC for dynamic strings and string lists. The [current ARC design](progress/ARC_DESIGN.md) describes the ownership boundaries and Debug checks. The following proposal records the earlier design checkpoint.
+Current builds use ARC for dynamic strings, including file-read strings, string lists, integer lists, and their owned views. The [current ARC design](progress/ARC_DESIGN.md) describes ownership boundaries and Debug checks. The following proposal records an earlier design checkpoint.
 
 ## Stage 9: memory model proposal
 
-The current runtime allocates heap slice buffers and class objects without general release logic. Repeated append/new operations can therefore grow memory until process exit. readText also returns allocated string storage without a language-level reclamation mechanism. Temporary console conversion buffers are a separate case and are explicitly freed. Fixed-array local-view checks do not provide general heap ownership, destruction or cycle handling. These are resource-lifetime limitations, not a claim that all existing bounds/null checks are absent.
+At this checkpoint, heap slice buffers, class objects, and file-read strings had process-lifetime storage. Current file-read strings use ARC. Legacy heap slices and class objects still have process lifetime. Fixed-array local-view checks cover local borrows, and general class-cycle reclamation remains a future design.
 
 | Candidate | Ease of use | Runtime cost and release timing | Main difficulty | Native engine boundary |
 | --- | --- | --- | --- | --- |
