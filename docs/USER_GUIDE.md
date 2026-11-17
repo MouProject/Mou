@@ -50,7 +50,7 @@ This prints `9` and `a + b`. Import an alias in each file that uses it. The VS C
 
 Use `math.min(numbers)`, `math.max(numbers)`, and `math.sum(numbers)` with an `int[]`. The aggregate functions also accept direct literals. Use `numbers.contains(value)` to test membership before appending, or use the same method on a flat `str[]`. See the [seeded lottery example](../examples/standard-library-update.mcx).
 
-Use `str(char(65))` to turn the byte 65 into the text `"A"` and `int("A")` to read its code. `int("5")` returns 53. Both of these text conversions support the ASCII range.
+Use `print(char(65))` to display `A` in current source builds. Use `print(int(char(65)))` for the decimal code `65`. The same display rules apply inside `format()`. A control byte prints as an escape, such as `\x0A` for byte 10. Use `str(char(10))` when you need an actual newline in a string. `int("5")` returns the ASCII code 53.
 
 ## Migrate from Moulang 0.2.0
 
@@ -138,7 +138,7 @@ When wrapping is intentional, select the low bits before casting. Mask with 255 
 ```m
 main() {
     int raw = 260
-    print(char(raw & 255))
+    print(int(char(raw & 255)))
     long bits = 65535
     print(short((bits & 32767) - (bits & 32768)))
 }

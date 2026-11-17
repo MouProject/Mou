@@ -1,12 +1,18 @@
 # Next Moulang preview release preparation
 
-The next test preview pairs compiler 0.4.1 with VS Code extension 0.2.2. The extension uses the `KaichuTheFox.moulang` identity. The [0.4.1 test preview notes](../RELEASE_NOTES_0.4.1.md) describe the new collection functions, ASCII conversions, and installation.
+The next test preview pairs compiler 0.4.2 with VS Code extension 0.2.2. The extension uses the `KaichuTheFox.moulang` identity. The [0.4.2 test preview notes](../RELEASE_NOTES_0.4.2.md) describe character output, compatibility, and installation.
 
 ## Version and publication sequence
 
-1. The selected versions are in `CMakeLists.txt`, the extension manifest, and the extension lockfile. The changelog labels the preview as unreleased. Public download links point to the published 0.3.0 preview until the new assets exist.
+1. The selected versions are in `CMakeLists.txt`, the extension manifest, and the extension lockfile. The changelog labels the preview as unreleased. Update public test preview links after verifying the new assets.
 2. Review the source diff before pushing. A regular `main` push or a pull request runs the build and installation jobs without a version tag. Transfer the resulting ZIP and checksum to clean Windows 10 and Windows 11 x64 environments and follow the [clean Windows steps](../RELEASE.md#additional-clean-windows-check).
-3. After validation and publication approval, push `v0.4.1` to trigger GitHub preview Release publication. Verify the published ZIP and checksum, then update public download links. VS Code Marketplace publication is a separate action using the same extension identity.
+3. After validation and publication approval, push `v0.4.2` to trigger GitHub preview Release publication. Verify the published ZIP and checksum, then update public download links. VS Code Marketplace publication is a separate action using the same extension identity.
+
+## 0.4.2 test preview verification
+
+Windows x64 passed 27 Release and 24 Debug CTest entries. All 10 repository-link and extension unit checks passed, and isolated VS Code 1.144.0 passed with both the source extension and installed 0.2.2 VSIX.
+
+The new local ZIP passed its external checksum and all 29 manifest entries. Windows PowerShell ran the bundled installer verification with restricted development-tool discovery. The extracted compiler reported `0.4.2` and produced the release notes' expected character and floating-point output. The bundled 0.2.2 VSIX contents matched the prior local package. A separate Windows installation without developer tools remains to be checked for this bundle.
 
 ## 0.4.1 test preview verification
 

@@ -28,7 +28,7 @@ main() {
     }
     if (mode == 0) {
         print(short(-32768) / short(-1), 2147483647 + 1)
-        print(int(4294967297.0), char(256.0), short(65535.0), int(2.5), int(3.5))
+        print(int(4294967297.0), int(char(256.0)), short(65535.0), int(2.5), int(3.5))
         print("checked {}") { format(short(7)) }
     }
 '@
@@ -37,7 +37,8 @@ for ($i = 0; $i -lt $cases.Count; $i++) {
     $case = $cases[$i]
     $case.Mode = $i + 1
     $cast = "$($case.Target)($($case.Operand))"
-    $line = "    if (mode == $($case.Mode)) { print($cast) }"
+    $printed = if ($case.Target -eq 'char') { "int($cast)" } else { $cast }
+    $line = "    if (mode == $($case.Mode)) { print($printed) }"
     $case.Location = "$($lines.Count + 1):$($line.IndexOf($cast, [StringComparison]::Ordinal) + 1)"
     $lines += $line
 }

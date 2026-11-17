@@ -5,11 +5,14 @@
 | Feature | Status | Scope |
 | --- | --- | --- |
 | Integer list math and membership | Implemented | `math.min/max/sum` for `int[]`. `.contains()` for `int[]` and flat `str[]`. |
-| ASCII conversions | Implemented | `int(str)` and `str(char)`. Numeric casts and numeric `char` output retain their rules. |
+| ASCII conversions | Implemented | `int(str)` reads an ASCII code and `str(char)` creates a string containing one ASCII byte. |
+| Character output | Implemented in current source | `print()` and block `format()` show printable ASCII as characters and other bytes as `\xHH`. Convert to `int` for decimal byte codes. |
 | Standard random module | Implemented | Seeded `nextInt` and `nextDouble` in the current implementation. |
 | Managed memory | Partial | ARC for strings, lists, and owned views. Class objects and legacy heap slices have process lifetime. |
 | Source extensions | Implemented | `.mcx` default, `.m` for compatibility, and five additional supported suffixes. No formal deprecations. |
 | General class cycle reclamation and Linux output | Planned | Design work remains. |
+
+The character-output regression checks every byte in both print forms, checks source-located cast errors at -1 and 256, and checks ASCII string conversion and existing real output. The local Windows x64 run passed 27 Release and 24 Debug CTest entries, and the isolated VS Code source and installed VSIX suites passed.
 
 ## Unreleased collection and ASCII conversions
 

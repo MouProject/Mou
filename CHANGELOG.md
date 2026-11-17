@@ -1,6 +1,12 @@
 # Changelog
 
-## Moulang 0.4.1 test preview and bundled VS Code extension 0.2.2 (unreleased)
+## Moulang 0.4.2 test preview and bundled VS Code extension 0.2.2 (unreleased)
+
+### Breaking Changes
+
+- `print()` and block `format()` now display printable ASCII `char` values as characters and other byte values as `\xHH`. Use `int(charValue)` to keep the previous decimal output in logs, tests, or other consumers.
+
+## Moulang 0.4.1 test preview and bundled VS Code extension 0.2.2
 
 - Add `math.min(int[])`, `math.max(int[])`, and `math.sum(int[])`, including directly passed list literals. Sums return `long` and empty sums return zero.
 - Add read-only `.contains()` to `int[]` and flat `str[]`. VS Code completes it and the new math function.

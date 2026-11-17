@@ -148,7 +148,7 @@ main() {
 $expected = @(
     '-4 2147483647 4294967290 long', '0 0 -2147483648 2', '-4294967296 8 9',
     'true false -4', 'true false -4', 'true false -4', 'true', 'true', 'true', 'true',
-    'false false false false', '65 A 65 53 0 127', 'B a true 10 10', '65 A', ''
+    'false false false false', 'A A 65 53 0 127', 'B a true 10 10', 'A A', ''
 ) -join [char]10
 foreach ($optimization in '-O0', '-O2', '-O3') {
     $file = Join-Path $work 'collections.exe'

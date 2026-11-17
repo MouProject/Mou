@@ -5,7 +5,7 @@ main() {
     int[] numbers = [10, 20, 30, 40, 50]
 
     print("Absolute value", math.abs(-10))
-    print("ASCII character", str(char(65)))
+    print("ASCII character", char(65))
     print("ASCII code", int("A"))
     print("Real to integer", int(10.5))
     print("Integer to real", float(10))

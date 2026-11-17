@@ -500,6 +500,14 @@ int compareItems(ListItem left, ListItem right) {
     return bytes ? bytes : left.length - right.length;
 }
 
+void writeByteEscape(unsigned char byte, char* buffer) {
+    constexpr char hex[] = "0123456789ABCDEF";
+    buffer[0] = '\\';
+    buffer[1] = 'x';
+    buffer[2] = hex[byte >> 4];
+    buffer[3] = hex[byte & 0x0f];
+}
+
 void printListText(ListItem item) {
     const auto* text = static_cast<const char*>(item.data);
 #ifdef MOULANG_ARC_DEBUG
@@ -519,9 +527,9 @@ void printListText(ListItem item) {
         case '"': moulang_output("\\\"", 2); break;
         case '\\': moulang_output("\\\\", 2); break;
         default: {
-            constexpr char hex[] = "0123456789ABCDEF";
-            const char escape[] = {'\\', 'x', hex[byte >> 4], hex[byte & 15]};
-            moulang_output(escape, 4);
+            char escape[4];
+            writeByteEscape(byte, escape);
+            moulang_output(escape, sizeof(escape));
         }
         }
         start = i + 1;
@@ -989,6 +997,16 @@ void mapAscii(const Text& value, char first, char last, int shift, Text* result)
 extern "C" int moulang_std_text_len(const Text* value) {
     const auto bytes = textBytes(*value);
     return value->ascii ? value->length : pointCount(bytes.data(), value->length);
+}
+
+extern "C" int moulang_render_char(int value, char* buffer) {
+    const auto byte = static_cast<unsigned char>(value);
+    if (byte >= 0x20 && byte <= 0x7e) {
+        buffer[0] = static_cast<char>(byte);
+        return 1;
+    }
+    writeByteEscape(byte, buffer);
+    return 4;
 }
 
 extern "C" void moulang_char_to_text(int value, Text* result) {

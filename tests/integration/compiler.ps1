@@ -236,7 +236,7 @@ main() {
 double exact(double value) { return value }
 '@
     [IO.File]::WriteAllText((Join-Path $workspace 'numbers.m'), $numbers, $utf8)
-    $numericOutput = @('255', '4', '-1', '32767', '2147483648', '4294967295', '1', '-1', '2', '4', '-2', '-4',
+    $numericOutput = @('\xFF', '\x04', '-1', '32767', '2147483648', '4294967295', '1', '-1', '2', '4', '-2', '-4',
         '0', '1', '2', '0', '16385', '0.1', '16777216', '16777217.25', 'true', 'true', 'true', '9.5', '7',
         'true') -join "`n"
     Check (Invoke-Native $Compiler @('run', 'numbers.m')) 0 $numericOutput
@@ -340,7 +340,7 @@ main() {
 }
 '@
     [IO.File]::WriteAllText((Join-Path $workspace 'features.m'), $features, $utf8)
-    $featureOutput = @('3', '9', '6', '4', '255', '1', '-2', '42', 'nested', '1', '17',
+    $featureOutput = @('3', '9', '6', '4', '\xFF', '\x01', '-2', '42', 'nested', '1', '17',
         '-1', '8', '8', '-1', '11', '30', '20', '40', '1') -join "`n"
     Check (Invoke-Native $Compiler @('run', 'features.m')) 0 $featureOutput
     Check (Invoke-Native $Compiler @('build', 'features.m')) 0 ''

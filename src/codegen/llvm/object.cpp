@@ -812,6 +812,11 @@ private:
             return textPair(LLVMBuildSelect(builder_, value, field(yes, 0), field(no, 0), ""),
                 LLVMBuildSelect(builder_, value, field(yes, 1), field(no, 1), ""));
         }
+        if (valueType == Type::byte) {
+            const auto buffer = allocate(LLVMArrayType2(LLVMInt8TypeInContext(context_), 4), "char.text");
+            const auto byte = numericCast(value, valueType, Type::integer);
+            return textPair(buffer, call("moulang_render_char", integer_, {byte, buffer}));
+        }
         const auto buffer = allocate(LLVMArrayType2(LLVMInt8TypeInContext(context_), 32), "scalar.text");
         const auto render = valueType == Type::float32 ? "moulang_render_float" :
             valueType == Type::float64 ? "moulang_render_double" : "moulang_render_long";

@@ -45,9 +45,45 @@ $inputBytes = $utf8.GetBytes("$name`r`n`n255`n-32768`n  +42 `n-92233720368547758
 $r = Invoke-Moulang 'block.m' $source -InputBytes $inputBytes
 $expected = '{{ready}} {} ignored' + "`n" + 'trace {{ready}} {} {}' +
     "`ntrace left`ntrace right`n{ready} left right`n" +
-    "$($name):255 -32768 42 -9223372036854775808 2.5 -125 true`n{x$([char]0)y}`n{}`n"
+    "$($name):\xFF -32768 42 -9223372036854775808 2.5 -125 true`n{x$([char]0)y}`n{}`n"
 if ($r.Code -ne 0 -or $r.Error -or $r.Out -cne $expected) {
     throw "Unexpected print block output: $($r.Code), [$($r.Out)], [$($r.Error)]."
+}
+
+$charOutput = @'
+main() {
+    print(char(65))
+    print(char(66))
+    print(char(67))
+    print(char(97))
+    print(int(char(65)))
+    print(char(65), "\u{AC00}", 65, float(10), double(10), char(255))
+    print("{} {} {} {}") { format(char(65), int(char(65)), float(10), double(10)) }
+    print(str(char(0)) == "\0", str(char(10)) == "\n")
+    for (byte=0 in byte++(256)) {
+        char rendered = char(byte)
+        print(rendered)
+        print("[{}]") { format(rendered) }
+    }
+}
+'@
+$charLines = @('A', 'B', 'C', 'a', '65', "A $([char]0xAC00) 65 10 10 \xFF", 'A 65 10 10', 'true true')
+$charLines += foreach ($byte in 0..255) {
+    $rendered = if ($byte -ge 32 -and $byte -le 126) { [string][char]$byte } else { '\x{0:X2}' -f $byte }
+    $rendered
+    "[$rendered]"
+}
+$expectedChars = ($charLines + '') -join [char]10
+$r = Invoke-Moulang 'char-output.mcx' $charOutput
+if ($r.Code -ne 0 -or $r.Error -or $r.Out -cne $expectedChars) {
+    throw "Unexpected char output: $($r.Code), [$($r.Out)], [$($r.Error)]."
+}
+
+foreach ($outside in -1, 256) {
+    $r = Invoke-Moulang 'char-range.mcx' "main() { print(char($outside)) }"
+    if ($r.Code -ne 1 -or $r.Out -or $r.Error -notmatch 'char-range[.]mcx:1:16:.*int value is outside the char range') {
+        throw "Expected a source-located char range error for $outside. $($r.Error)"
+    }
 }
 
 $compileErrors = @(
