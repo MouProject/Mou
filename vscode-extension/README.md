@@ -2,6 +2,12 @@
 
 Language support and native execution for Moulang, the programming language from the HAZOS development team.
 
+Moulang is a work-in-progress programming language. HAZOS is actively developing it and publishes updates as test previews.
+
+## News and updates
+
+Read release notes and find compiler downloads on the [Moulang Releases page](https://github.com/Team-HaZos/Moulang/releases). Follow the [HAZOS project on GitHub](https://github.com/Team-HaZos/Moulang) for documentation and report issues through the [issue tracker](https://github.com/Team-HaZos/Moulang/issues).
+
 The current extension source recognizes `.mcx` and the compatible suffixes `.m`, `.mxx`, `.mpp`, `.mcp`, `.m++`, and `.mc+`. Each uses the same highlighting, snippets, completion, and diagnostics. Use the matching Windows x64 compiler build for mixed-suffix imports.
 
 Extension 0.2.2 completes `math.min`, `math.max`, `math.sum`, and list `.contains()`. The matching compiler 0.4.1 test preview supports `int("A")` for an ASCII code and `str(char(65))` for text output.
@@ -10,7 +16,7 @@ Extension 0.2.1 adds `Team.HaZos` to the MIT copyright notice. Version 0.2.0 int
 
 ## Install the compiler
 
-Use the Windows test preview bundle that contains compiler 0.4.1 and `moulang-0.2.2.vsix`, or [build the compiler from source](https://github.com/Team-HaZos/Moulang#build-from-source). The published 0.3.0 preview and its bundled extension 0.1.6 remain available as a [compiler ZIP](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip) and [SHA-256 file](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip.sha256). Compare the ZIP's `Get-FileHash -Algorithm SHA256` result before extracting the whole package, for example to `C:\Moulang`. Keep `bin/toolchain` and its notices. The kit includes the tools needed to build and run Moulang programs.
+Download the Windows x64 [compiler 0.4.2 test preview ZIP](https://github.com/Team-HaZos/Moulang/releases/download/v0.4.2/moulang-windows-x64.zip) and its [SHA-256 file](https://github.com/Team-HaZos/Moulang/releases/download/v0.4.2/moulang-windows-x64.zip.sha256), or [build the compiler from source](https://github.com/Team-HaZos/Moulang#build-from-source). Compare the ZIP's `Get-FileHash -Algorithm SHA256` result before extracting the whole package, for example to `C:\Moulang`. Keep `bin/toolchain` and its notices. The kit includes the tools needed to build and run Moulang programs.
 
 Set `moulang.executablePath` to `C:\Moulang\bin\moulang.exe`, without quotes, or add the bin folder to PATH and restart VS Code. The extension does not install or download a compiler automatically. Run the extracted `Verify-Install.ps1` to check package hashes and execute Hello World.
 
@@ -26,6 +32,7 @@ If the compiler cannot be found, choose **Open Settings** in the error notificat
 
 ## Compiler compatibility
 
+- Extension 0.2.3 updates the repository and support links and pairs with the compiler 0.4.2 test preview.
 - Extension 0.2.2 pairs with the compiler 0.4.1 test preview for integer-list math, list membership, and ASCII conversions.
 - Extensions 0.2.0 and 0.2.1 pair with compiler 0.4.0 for all seven source suffixes, standard-module completion, and Tiki Inspector.
 - Extension 0.1.6 pairs with compiler 0.3.0 for the new syntax and completion.
@@ -36,6 +43,6 @@ If the compiler cannot be found, choose **Open Settings** in the error notificat
 
 Compiler 0.2.0 supports the documented string escapes, signed 64-bit long and ordinary function overloads. This extension highlights escapes; the compiler validates Unicode and decoded UTF-8. Earlier development archives may predate these features. See the [0.2.0 release notes](https://github.com/KaichuTheFox/Moulang/releases/tag/v0.2.0).
 
-See the [compiler installation guide](https://github.com/Team-HaZos/Moulang#install-without-building) and [issue tracker](https://github.com/Team-HaZos/Moulang/issues) in the Moulang repository.
+See the [compiler installation guide](https://github.com/Team-HaZos/Moulang#install-without-building) in the Moulang repository.
 
 The extension is licensed under MIT.

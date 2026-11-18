@@ -1,5 +1,13 @@
 # Changelog
 
+## VS Code extension 0.2.4 (unreleased)
+
+- Add the project development status and public release news to the extension description.
+
+## VS Code extension 0.2.3
+
+- Point the source, homepage, issue tracker, and compiler download links to Team-HaZos/Moulang.
+
 ## Moulang 0.4.2 test preview and bundled VS Code extension 0.2.2 (unreleased)
 
 ### Breaking Changes

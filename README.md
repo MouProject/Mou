@@ -6,13 +6,19 @@ Moulang is a statically typed programming language from the HAZOS development te
 
 Source development and issue tracking are hosted by [Team-HaZos](https://github.com/Team-HaZos/Moulang). See the [documentation index](docs/README.md) for the language specification, user guide, and compiler architecture.
 
+Moulang is a work-in-progress programming language. HAZOS is actively developing it and publishes updates as test previews.
+
+## News and updates
+
+Read release notes and find downloads on the [Moulang Releases page](https://github.com/Team-HaZos/Moulang/releases). Visit the [HAZOS project on GitHub](https://github.com/Team-HaZos/Moulang) for documentation and issue tracking.
+
 ## Install without building
 
 **Currently Windows x64 only.** Linux portability is a [design proposal](docs/PLATFORM_DESIGN.md); no Linux implementation has been validated.
 
 Moulang 0.3.0 is a Windows x64 preview with `str`, print blocks, string lists, and UTF-8 append. See the [release notes](docs/RELEASE_NOTES_0.3.0.md) for migration from 0.2.0 and current limitations.
 
-The current source builds Moulang 0.4.2 as a test preview and bundles VS Code extension 0.2.2. See the [0.4.2 test preview notes](docs/RELEASE_NOTES_0.4.2.md).
+The current source builds the Moulang 0.4.2 compiler and VS Code extension 0.2.4. The [published 0.4.2 test preview](https://github.com/Team-HaZos/Moulang/releases/tag/v0.4.2) includes extension 0.2.2. See the [0.4.2 test preview notes](docs/RELEASE_NOTES_0.4.2.md).
 
 1. Download the [compiler ZIP](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip) and [SHA-256 file](https://github.com/KaichuTheFox/Moulang/releases/download/v0.3.0/moulang-windows-x64.zip.sha256) from [Release v0.3.0](https://github.com/KaichuTheFox/Moulang/releases/tag/v0.3.0). Compare `Get-FileHash .\moulang-windows-x64.zip -Algorithm SHA256` with the checksum file, then extract the whole ZIP, for example to `C:\Moulang`.
 2. Add its `bin` folder to your Windows user `PATH`, reopen the terminal, and run `moulang --version`. Keep `bin/toolchain` and its notices alongside the compiler.

@@ -2,7 +2,7 @@
   "name": "moulang",
   "displayName": "Moulang for VS Code",
   "description": "Language support and native execution for Moulang source files.",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "license": "MIT",
   "publisher": "KaichuTheFox",
   "icon": "images/moulang-icon.png",
