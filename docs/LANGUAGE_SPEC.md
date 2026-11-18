@@ -106,7 +106,7 @@ main() {
 - Indexed assignment may replace a string or row during iteration. A replacement at a later slot is visible when the loop reaches it. The current loop variable retains the value already read from its slot.
 - A structural change to an actively iterated list raises a runtime error at the operation, including changes through aliases. Adding, removing, and reordering slots are structural changes. Sorting a flat list already in order leaves its slots unchanged and is allowed. The guard applies to the specific list being traversed. A nested list's child row can be changed independently while the outer list is being traversed, provided the child has no active iterator.
 - Each iterator retains its list until normal exit, `break`, or `return`. `continue` releases the current item and keeps the iterator active.
-- Mixed element types are rejected. The [mixed-list proposal](MIXED_LIST_DESIGN.md) records the changes needed to support them.
+- Mixed element types are rejected.
 
 ## Imports and file I/O
 
@@ -134,7 +134,7 @@ main() {
 
 ## Optional source diagnostics
 
-`moulang check --tiki=basic`, `--tiki=perf`, `--tiki=deep`, and `--tiki=all` enable advisory source warnings. `all` enables every rule group. `--tiki-disable=CODE[,CODE...]` suppresses named rules for the current invocation. Warnings use TI codes and exit code 0 when the check succeeds. Language errors keep their ML codes and exit code 1. The runtime independently checks structural changes during `foreach`. See the [initial rules](progress/TIKI_INSPECTOR_DESIGN.md#initial-rules) and [Deep rule](progress/ARC_TIKI_INTEGRATION_DESIGN.md#deep-rule).
+`moulang check --tiki=basic`, `--tiki=perf`, `--tiki=deep`, and `--tiki=all` enable advisory source warnings. `all` enables every rule group. `--tiki-disable=CODE[,CODE...]` suppresses named rules for the current invocation. Warnings use TI codes and exit code 0 when the check succeeds. Language errors keep their ML codes and exit code 1. The runtime independently checks structural changes during `foreach`. See the [Tiki Inspector guide](USER_GUIDE.md#run-tiki-inspector).
 
 ## Experimental fixed arrays and classes
 

@@ -1,6 +1,6 @@
 # Stage 6 ARC validation
 
-The [implementation status](../IMPLEMENTATION_STATUS.md) records the supported lifetime rules. The [ownership design](ARC_DESIGN.md) describes the C ABI, Debug handles, and remaining class and integer-slice lifetime boundaries.
+The [implementation status](../IMPLEMENTATION_STATUS.md) records the supported lifetime rules.
 
 ## Before and after
 

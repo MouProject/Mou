@@ -171,7 +171,7 @@ main() {
 }
 ```
 
-Deep tracks direct list bindings within one function. Aliasing through calls, fields, and nested list slots can escape this analysis. The runtime still checks structural changes during iteration. See the [rule and its coverage](progress/ARC_TIKI_INTEGRATION_DESIGN.md#deep-rule).
+Deep tracks direct list bindings within one function. Aliasing through calls, fields, and nested list slots can escape this analysis. The runtime still checks structural changes during iteration.
 
 In a trusted VS Code workspace, enable **Moulang: Live Diagnostics**, then set **Moulang: Tiki Mode** to `basic`, `perf`, `deep`, or `all`. Warnings from unsaved edits appear in **Problems**. The default is `off`. Use a compiler built with the selected Tiki mode.
 

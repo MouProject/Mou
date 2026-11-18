@@ -16,7 +16,7 @@ The Stage 1 rerun configured and built both compiler configurations. CTest passe
 
 Source loading and semantic analysis precede LLVM C API lowering. The backend verifies LLVM IR and emits a Windows x64 GNU ABI COFF object. The driver links it with the static runtime. Build defaults to -O0, run uses -O0, and -O2 and -O3 select the corresponding LLVM default pipeline followed by verification. CMake Release and Debug describe how the compiler itself is built.
 
-The ten source snippets and exact diagnostic strings in [Diagnostic proposals](../DIAGNOSTIC_PROPOSALS.md) were re-run through compiler 0.3.0. All ten matched. That document identifies concrete improvements to source spans, type explanations, name suggestions, and hints while preserving machine-readable ML diagnostics.
+Ten diagnostic fixtures were re-run through compiler 0.3.0. All ten matched their expected diagnostics.
 
 ## Numeric conversion matrix
 
@@ -43,4 +43,4 @@ Truncated bits are interpreted in the destination type, so char is unsigned whil
 
 Thirty supported workload and language combinations completed a warm-up and five measured runs, each with verified output. Six combinations are marked N/A. See the [benchmark report](PRE_ARC_BASELINE.md), [CSV](PRE_ARC_BASELINE.csv), and [reproduction instructions](../../tests/benchmarks/README.md).
 
-The [ARC design](ARC_DESIGN.md) compares three alternatives. The owner approved owning slots with explicit retain and release for Stage 6. The implementation and the before-and-after measurements are recorded in [ARC validation](ARC_VALIDATION.md).
+See [ARC validation](ARC_VALIDATION.md) for the before-and-after measurements.

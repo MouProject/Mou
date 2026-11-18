@@ -4,7 +4,7 @@
 
 Moulang is a statically typed programming language from the HAZOS development team. In current source builds, `.mcx` is the default extension and `.m` supports existing projects. The compiler is written in C++20 and uses LLVM to produce native Windows x64 executables. The project aims to make native compilation and source-level diagnostics easy to use while keeping the language small.
 
-Source development and issue tracking are hosted by [Team-HaZos](https://github.com/Team-HaZos/Moulang). See the [documentation index](docs/README.md) for the language specification, user guide, and compiler architecture.
+Source development and issue tracking are hosted by [Team-HaZos](https://github.com/Team-HaZos/Moulang). See the [documentation index](docs/README.md) for the language specification and user guide.
 
 Moulang is a work-in-progress programming language. HAZOS is actively developing it and publishes updates as test previews.
 
@@ -14,7 +14,7 @@ Read release notes and find downloads on the [Moulang Releases page](https://git
 
 ## Install without building
 
-**Currently Windows x64 only.** Linux portability is a [design proposal](docs/PLATFORM_DESIGN.md); no Linux implementation has been validated.
+**Currently Windows x64 only.**
 
 Moulang 0.3.0 is a Windows x64 preview with `str`, print blocks, string lists, and UTF-8 append. See the [release notes](docs/RELEASE_NOTES_0.3.0.md) for migration from 0.2.0 and current limitations.
 
@@ -117,7 +117,7 @@ Try the [string list example](examples/lists.m) for `str[]` methods and ragged `
 
 ## Visual Studio Code
 
-Current source builds use signed 64-bit `long`. Literals beyond the int range infer long; `int(longValue)` checks its range at runtime. Convert long values explicitly before mixing them with real values, for example `double(value) + 0.5`. Ordinary functions may overload parameter signatures within one file; exact argument types take precedence. See the [approved integer rules](docs/LONG_DESIGN.md) and [language specification](docs/LANGUAGE_SPEC.md).
+Current source builds use signed 64-bit `long`. Literals beyond the int range infer long; `int(longValue)` checks its range at runtime. Convert long values explicitly before mixing them with real values, for example `double(value) + 0.5`. Ordinary functions may overload parameter signatures within one file; exact argument types take precedence. See the [language specification](docs/LANGUAGE_SPEC.md).
 
 Package the extension with its pinned development dependencies:
 
@@ -142,7 +142,7 @@ code --extensionDevelopmentPath="$((Resolve-Path vscode-extension).Path)" .
 
 ## Troubleshooting
 
-See the [diagnostic improvement proposals](docs/DIAGNOSTIC_PROPOSALS.md) for ten current examples and suggested source underlines/hints. These presentation changes are not yet implemented.
+See the [diagnostics guide](docs/USER_GUIDE.md#read-diagnostics) for examples and troubleshooting.
 
 - **moulang is not recognized.** Add the compiler directory to PATH and reopen PowerShell, or use the full executable path.
 - **CMake cannot find LLVM.** Point LLVM_DIR to the extracted package's lib/cmake/llvm directory. Use an x64 Developer PowerShell and point CMAKE_LINKER to lld-link.exe from the same archive.
@@ -152,7 +152,7 @@ See the [diagnostic improvement proposals](docs/DIAGNOSTIC_PROPOSALS.md) for ten
 
 ## Project information
 
-Current source builds reclaim dynamic strings and string lists with reference counting. Heap-backed integer slices and class objects live until process exit. See the [ARC design](docs/progress/ARC_DESIGN.md) and [Debug memory checks](docs/USER_GUIDE.md#check-managed-memory-in-a-debug-build).
+Current source builds reclaim dynamic strings and string lists with reference counting. Heap-backed integer slices and class objects live until process exit. See the [Debug memory checks](docs/USER_GUIDE.md#check-managed-memory-in-a-debug-build).
 
 Current builds support `foreach` over strings and string lists. A list can replace elements during iteration, and structural changes raise a runtime error. ASCII strings use constant-time code-point indexing. See the [iteration guide](docs/USER_GUIDE.md#iterate-over-a-string-list).
 
@@ -166,7 +166,6 @@ Moulang is developed by HAZOS and distributed under the [MIT License](LICENSE).
 
 Release builds omit compiler debug information and map compiler source/object paths when supported. The compiler resolves its approved LLVM-MinGW static kit relative to its own directory. It packages selected open-source static libraries and complete notices rather than standalone Microsoft development libraries. Clean-Windows and release-package validation remain separate checks. Read the [manual backup, email cleanup, and distribution review](docs/PRIVACY.md) before a public binary release or history rewrite.
 
-- [Compiler architecture](docs/COMPILER_ARCHITECTURE.md)
 - [Documentation index](docs/README.md)
 - [User guide](docs/USER_GUIDE.md)
 - [Changelog](CHANGELOG.md)

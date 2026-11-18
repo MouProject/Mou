@@ -9,7 +9,7 @@ This Windows x64 preview bundles compiler 0.4.0, its native link kit, and Moulan
 - Use `.mcx` for new programs. Existing `.m` files and five additional lowercase suffixes work in the compiler and VS Code. Source imports can mix the supported suffixes.
 - Import the math, text, time, and random standard modules. Compiler errors can show source excerpts, carets, and selected hints.
 - Enable Tiki Inspector Basic, Performance, or Deep warnings in `check` or VS Code Live Diagnostics. Deep flags supported cases of structural list changes through known aliases. The runtime applies its own iteration checks.
-- Speed up indexing of long UTF-8 strings by scanning from the end selected by the index. See the [benchmark results](progress/PERFORMANCE_OPTIMIZATION_DESIGN.md#measurements-after-optimization).
+- Speed up indexing of long UTF-8 strings by scanning from the end selected by the index. See the [benchmark results](progress/STAGE16_OPTIMIZED.csv).
 
 ## Upgrade and install
 

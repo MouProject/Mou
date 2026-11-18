@@ -29,4 +29,4 @@ For a Tiki check benchmark, run `python -B tests/benchmarks/tiki.py --before <pr
 
 Add `--deep` with a Stage 14 compiler as `--before` and a Deep-capable compiler as `--after` to compare plain, Basic, and Deep checks on source graphs with list aliases. A separate workload emits 50 Deep warnings and checks their codes before measuring output cost.
 
-The [Stage 16 baseline](../../docs/progress/PERFORMANCE_OPTIMIZATION_DESIGN.md#reproduce-the-baseline) also uses `utf8-index-direction.m` and `text-concat-join.m`. Compile each at `-O2`. Each executable prints in-process timings in nanoseconds in source order and prints `-1` for any incorrect result. Discard the warm-up launch and record 11 samples for comparison with the saved measurements.
+The [Stage 16 results](../../docs/progress/STAGE16_OPTIMIZED.csv) cover benchmarks that use `utf8-index-direction.m` and `text-concat-join.m`. Compile each at `-O2`. Each executable prints in-process timings in nanoseconds in source order and prints `-1` for any incorrect result. Discard the warm-up launch and record 11 samples for comparison with the saved measurements.
